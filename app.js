@@ -35,15 +35,32 @@ app.get('/pending', function (req, res) {
 });
 
 app.post('/webhook', function (req, res) {
-    console.log('webhook response', res.data)
     if (req.method === "POST") {
         let body = "";
         req.on("data", chunk => {
             body += chunk.toString();
         });
         req.on("end", () => {
-            console.log(body, "webhook response");
-            res.end("ok");
+            console.log('webhook response', body);
+            const request = JSON.parse(body);
+            switch (request["type"]) {
+                case "payment":
+                    try {
+                        const url = `https://api.mercadopago.com/v1/payments/${request.data.id}?access_token=APP_USR-6718728269189792-112017-dc8b338195215145a4ec035fdde5cedf-491494389`;
+                        const request = await axios.post(url, preference, {
+                            headers: {
+                                "Content-Type": "application/json",
+                                "x-integrator-id": "dev_24c65fb163bf11ea96500242ac130004"
+                            }
+                        });
+                        console.log(request.data);
+                        res.end("ok");
+                    } catch (e) {
+                        console.log(e);
+                        res.end("ok");
+                    }
+                    break;
+            }
         });
 
 
@@ -108,7 +125,7 @@ app.post('/checkout', async function (req, res) {
 
     try {
         const response = await mercadopago.preferences.create(preference);
-        console.log('init point',response.body.init_point);
+        console.log('init point', response.body.init_point);
         res.redirect(response.body.init_point);
     } catch (e) {
         console.log(e);
