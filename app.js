@@ -6,9 +6,9 @@ const bodyParser = require('body-parser');
 var app = express();
 
 mercadopago.configure({
-    sandbox: true,
-    access_token: 'TEST-675360048701030-062400-2ab485580ea0f74b0281dae7f1704d27-589482002',
-    integrator_id: 'dev_24c65fb163bf11ea96500242ac130004'
+    access_token: 'APP_USR-6718728269189792-112017-dc8b338195215145a4ec035fdde5cedf-491494389',
+    // access_token: 'TEST-675360048701030-062400-2ab485580ea0f74b0281dae7f1704d27-589482002'
+    // ,integrator_id: 'dev_24c65fb163bf11ea96500242ac130004'
 });
 
 const port = process.env.PORT || 3000;
@@ -39,16 +39,16 @@ app.get('/pending', function (req, res) {
     res.render('pending');
 });
 
+app.get('/notification', function (req, res) {
+    res.json(res.body);
+});
+
 app.post('/checkout', async function (req, res) {
-    let urlImage = '';
-    if (port === 3000) {
-        urlImage = `${req.protocol}://${req.hostname}:${port}${req.body.img.split('.')[1]}`;
-    } else {
-        urlImage = `${req.protocol}://${req.hostname}${req.body.img.split('.')[1]}`;
-    }
+    let urlImage = `https://aaronjacome-mp-ecommerce-nodej.herokuapp.com${req.body.img.split('.')[1]}`;
     console.log(urlImage);
     var preference = {
         external_reference: "aaronjacome93@gmail.com",
+        notification_url: "https://aaronjacome-mp-ecommerce-nodej.herokuapp.com/notification",
         payer: {
             name: 'Lalo Landa',
             email: 'test_user_58295862@testuser.com',
@@ -73,11 +73,11 @@ app.post('/checkout', async function (req, res) {
             },
         ],
         back_urls: {
-            success: `http://localhost:3000/success?collection_id=[PAYMENT_ID]&collection_status=approved&external_ref
+            success: `https://aaronjacome-mp-ecommerce-nodej.herokuapp.com/success?collection_id=[PAYMENT_ID]&collection_status=approved&external_ref
             erence=[EXTERNAL_REFERENCE]&payment_type=credit_card&preference_id=[PREFERENCE_ID]&site_id
             =[SITE_ID]&processing_mode=aggregator&merchant_account_id=null`,
-            pending: 'http://localhost:3000/pending',
-            failure: 'http://localhost:3000/failure',
+            pending: 'https://aaronjacome-mp-ecommerce-nodej.herokuapp.com/pending',
+            failure: 'https://aaronjacome-mp-ecommerce-nodej.herokuapp.com/failure',
         },
         payment_methods: {
             excluded_payment_methods: [
@@ -90,11 +90,7 @@ app.post('/checkout', async function (req, res) {
     };
 
     const response = await mercadopago.preferences.create(preference);
-    // .then(response => {
-    //     console.log(response.body.sandbox_init_point);
-    //     console.log(response.body.id)
-    //     global.id = response.body.id;
-    // })
+
     res.redirect(response.body.sandbox_init_point);
 });
 
