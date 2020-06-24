@@ -70,8 +70,8 @@ app.post('/webhook', function (req, res) {
 
 app.post('/checkout', async function (req, res) {
     mercadopago.configure({
-        access_token: 'APP_USR-6112339268078456-062416-a80342ef6a04ff79945ddd3445499e24-592116418',
-        // access_token: 'APP_USR-6718728269189792-112017-dc8b338195215145a4ec035fdde5cedf-491494389',
+        // access_token: 'APP_USR-6112339268078456-062416-a80342ef6a04ff79945ddd3445499e24-592116418',
+        access_token: 'APP_USR-8058997674329963-062418-89271e2424bb1955bc05b1d7dd0977a8-592190948',
         integrator_id: 'dev_24c65fb163bf11ea96500242ac130004'
     });
     let urlImage = `https://aaronjacome-mp-ecommerce-nodej.herokuapp.com${req.body.img.split('.')[1]}.jpg`;
@@ -92,8 +92,8 @@ app.post('/checkout', async function (req, res) {
         payer: {
             name: "Lalo",
             surname: "Landa",
-            email: "test_user_41791043@testuser.com",
-            // email: "test_user_58295862@testuser.com",
+            // email: "test_user_41791043@testuser.com",
+            email: "test_user_58295862@testuser.com",
             phone: {
                 area_code: "52",
                 number: 5549737300
