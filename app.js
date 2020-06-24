@@ -106,28 +106,28 @@ app.post('/checkout', async function (req, res) {
         auto_return: "approved"
     };
 
-    // try {
-    //     const response = await mercadopago.preferences.create(preference);
-    //     console.log('init point',response.body.init_point);
-    //     res.redirect(response.body.init_point);
-    // } catch (e) {
-    //     console.log(e);
-    // }
-
-
     try {
-        const url = `https://api.mercadopago.com/checkout/preferences?access_token=APP_USR-6718728269189792-112017-dc8b338195215145a4ec035fdde5cedf-491494389`;
-        const request = await axios.post(url, preference, {
-            headers: {
-                "Content-Type": "application/json",
-                "x-integrator-id": "dev_24c65fb163bf11ea96500242ac130004"
-            }
-        });
-        console.log(request.data.init_point);
-        res.redirect(request.data.init_point);
+        const response = await mercadopago.preferences.create(preference);
+        console.log('init point',response.body.init_point);
+        res.redirect(response.body.init_point);
     } catch (e) {
         console.log(e);
     }
+
+
+    // try {
+    //     const url = `https://api.mercadopago.com/checkout/preferences?access_token=APP_USR-6718728269189792-112017-dc8b338195215145a4ec035fdde5cedf-491494389`;
+    //     const request = await axios.post(url, preference, {
+    //         headers: {
+    //             "Content-Type": "application/json",
+    //             "x-integrator-id": "dev_24c65fb163bf11ea96500242ac130004"
+    //         }
+    //     });
+    //     console.log(request.data.init_point);
+    //     res.redirect(request.data.init_point);
+    // } catch (e) {
+    //     console.log(e);
+    // }
 
 
 });
