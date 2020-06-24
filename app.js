@@ -42,6 +42,7 @@ app.post('/webhook', function (req, res) {
         });
         req.on("end", () => {
             console.log('webhook response', body);
+            console.log('ID',body.data.id);
             const request = JSON.parse(body);
             switch (request["type"]) {
                 case "payment":
