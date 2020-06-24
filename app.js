@@ -6,8 +6,7 @@ const bodyParser = require('body-parser');
 var app = express();
 
 mercadopago.configure({
-    sandbox: true,
-    access_token: 'TEST-675360048701030-062400-2ab485580ea0f74b0281dae7f1704d27-589482002',
+    access_token: 'APP_USR-6718728269189792-112017-dc8b338195215145a4ec035fdde5cedf-491494389',
     integrator_id: 'dev_24c65fb163bf11ea96500242ac130004'
 });
 
