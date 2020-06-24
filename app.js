@@ -3,13 +3,13 @@ var exphbs = require('express-handlebars');
 var mercadopago = require('mercadopago');
 var bodyParser = require('body-parser');
 var logger = require('morgan');
-
+const axios = require("axios");
 var app = express();
 
-mercadopago.configure({
-    access_token: 'APP_USR-6718728269189792-112017-dc8b338195215145a4ec035fdde5cedf-491494389',
-    integrator_id: 'dev_24c65fb163bf11ea96500242ac130004'
-});
+// mercadopago.configure({
+//     access_token: 'APP_USR-6718728269189792-112017-dc8b338195215145a4ec035fdde5cedf-491494389',
+//     integrator_id: 'dev_24c65fb163bf11ea96500242ac130004'
+// });
 
 const port = process.env.PORT || 3000;
 
@@ -102,9 +102,24 @@ app.post('/checkout', async function (req, res) {
         auto_return: "approved"
     };
 
-    const response = await mercadopago.preferences.create(preference);
-    console.log(response.body.init_point);
-    res.redirect(response.body.init_point);
+    // const response = await mercadopago.preferences.create(preference);
+    // console.log(response.body.init_point);
+
+    try {
+        const url = `https://api.mercadopago.com/checkout/preferences?access_token=APP_USR-6718728269189792-112017-dc8b338195215145a4ec035fdde5cedf-491494389`;
+        const request = await axios.post(url, preference, {
+            headers: {
+                "Content-Type": "application/json",
+                "x-integrator-id": "dev_24c65fb163bf11ea96500242ac130004"
+            }
+        });
+        console.log(request.data.init_point);
+        res.redirect(request.data.init_point);
+    } catch (e) {
+        console.log(e);
+    }
+
+
 });
 
 app.use(express.static('assets'));
