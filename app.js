@@ -35,7 +35,6 @@ app.get('/pending', function (req, res) {
 });
 
 app.post('/webhook', function (req, res) {
-    console.log(req.body);
     if (req.method === "POST") {
         let body = "";
         req.on("data", chunk => {
