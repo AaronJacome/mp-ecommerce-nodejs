@@ -2,9 +2,9 @@ var express = require('express');
 var exphbs = require('express-handlebars');
 var mercadopago = require('mercadopago');
 var bodyParser = require('body-parser');
+var logger = require('morgan');
 
 var app = express();
-var logger = require('morgan');
 
 mercadopago.configure({
     access_token: 'APP_USR-6718728269189792-112017-dc8b338195215145a4ec035fdde5cedf-491494389',
@@ -94,11 +94,11 @@ app.post('/checkout', async function (req, res) {
             default_installments: 6
         },
         back_urls: {
-            success: "https://localhost:3000/success",
-            pending: "https://localhost:3000.com/pending",
-            failure: "https://localhost:3000.com/error"
+            success: "https://aaronjacome-mp-ecommerce-nodej.herokuapp.com/success",
+            pending: "https://aaronjacome-mp-ecommerce-nodej.herokuapp.com/pending",
+            failure: "https://aaronjacome-mp-ecommerce-nodej.herokuapp.com/error"
         },
-        notification_url: "https://mercadopago-checkout.herokuapp.com/webhook",
+        notification_url: "https://aaronjacome-mp-ecommerce-nodej.herokuapp.com/webhook",
         auto_return: "approved"
     };
 
