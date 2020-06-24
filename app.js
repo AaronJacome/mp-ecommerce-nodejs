@@ -7,8 +7,7 @@ var app = express();
 
 mercadopago.configure({
     access_token: 'APP_USR-6718728269189792-112017-dc8b338195215145a4ec035fdde5cedf-491494389',
-    // access_token: 'TEST-675360048701030-062400-2ab485580ea0f74b0281dae7f1704d27-589482002'
-    // ,integrator_id: 'dev_24c65fb163bf11ea96500242ac130004'
+    integrator_id: 'dev_24c65fb163bf11ea96500242ac130004'
 });
 
 const port = process.env.PORT || 3000;
@@ -43,8 +42,8 @@ app.get('/notification', function (req, res) {
     res.json(res.body);
 });
 
-app.post('/checkout', async function (req, res) {
-    let urlImage = `https://aaronjacome-mp-ecommerce-nodej.herokuapp.com${req.body.img.split('.')[1]}`;
+app.post('/checkout', function (req, res) {
+    let urlImage = `https://aaronjacome-mp-ecommerce-nodej.herokuapp.com${req.body.img.split('.')[1]}.jpg`;
     console.log(urlImage);
     var preference = {
         external_reference: "aaronjacome93@gmail.com",
@@ -73,9 +72,7 @@ app.post('/checkout', async function (req, res) {
             },
         ],
         back_urls: {
-            success: `https://aaronjacome-mp-ecommerce-nodej.herokuapp.com/success?collection_id=[PAYMENT_ID]&collection_status=approved&external_ref
-            erence=[EXTERNAL_REFERENCE]&payment_type=credit_card&preference_id=[PREFERENCE_ID]&site_id
-            =[SITE_ID]&processing_mode=aggregator&merchant_account_id=null`,
+            success: `https://aaronjacome-mp-ecommerce-nodej.herokuapp.com/success?collection_id=[PAYMENT_ID]&collection_status=approved&external_reference=[EXTERNAL_REFERENCE]&payment_type=credit_card&preference_id=[PREFERENCE_ID]&site_i=[SITE_ID]&processing_mode=aggregator&merchant_account_id=null`,
             pending: 'https://aaronjacome-mp-ecommerce-nodej.herokuapp.com/pending',
             failure: 'https://aaronjacome-mp-ecommerce-nodej.herokuapp.com/failure',
         },
@@ -86,12 +83,14 @@ app.post('/checkout', async function (req, res) {
             excluded_payment_types: [
                 { "id": "atm" }
             ],
-        }
+        },
+        auto_return: 'approved'
     };
 
-    const response = await mercadopago.preferences.create(preference);
-
-    res.redirect(response.body.sandbox_init_point);
+    mercadopago.preferences.create(preference).then(response => {
+        console.log(response.body.init_point);
+        res.redirect(response.body.init_point);
+    });
 });
 
 app.use(express.static('assets'));
