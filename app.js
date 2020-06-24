@@ -42,8 +42,9 @@ app.post('/webhook', function (req, res) {
         });
         req.on("end", () => {
             console.log('DATA webhook', body);
-            console.log('TYPE webhook', body["type"]);
-            switch (body["type"]) {
+            const json = JSON.parse(body);
+            console.log('TYPE webhook', json["type"]);
+            switch (json["type"]) {
                 case "payment":
                     try {
                         const url = `https://api.mercadopago.com/v1/payments/${body.data.id}?access_token=APP_USR-6718728269189792-112017-dc8b338195215145a4ec035fdde5cedf-491494389`;
