@@ -45,14 +45,13 @@ app.get('/webhook', function (req, res) {
             res.end("ok");
         });
     }
-    return res.status(200);
+    res.status(200);
 });
 
 app.post('/checkout', async function (req, res) {
     mercadopago.configure({
-        access_token: 'TEST-675360048701030-062400-2ab485580ea0f74b0281dae7f1704d27-589482002',
-        integrator_id: 'dev_24c65fb163bf11ea96500242ac130004',
-        sandbox:true
+        access_token: 'APP_USR-6112339268078456-062416-a80342ef6a04ff79945ddd3445499e24-592116418',
+        integrator_id: 'dev_24c65fb163bf11ea96500242ac130004'
     });
     let urlImage = `https://aaronjacome-mp-ecommerce-nodej.herokuapp.com${req.body.img.split('.')[1]}.jpg`;
     console.log(urlImage);
@@ -72,7 +71,7 @@ app.post('/checkout', async function (req, res) {
         payer: {
             name: "Lalo",
             surname: "Landa",
-            email: "test_user_27654569@testuser.com",
+            email: "test_user_41791043@testuser.com",
             phone: {
                 area_code: "52",
                 number: 5549737300
@@ -104,8 +103,8 @@ app.post('/checkout', async function (req, res) {
 
     try {
         const response = await mercadopago.preferences.create(preference);
-        console.log(response.body.sandbox_init_point);
-        res.redirect(response.body.sandbox_init_point);
+        console.log(response.body.init_point);
+        res.redirect(response.body.init_point);
     } catch (e) {
         console.log(e);
     }
