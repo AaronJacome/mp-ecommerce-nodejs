@@ -50,11 +50,12 @@ app.post('/webhook', function (req, res) {
 
 app.post('/checkout', async function (req, res) {
     mercadopago.configure({
-        access_token: 'APP_USR-6112339268078456-062416-a80342ef6a04ff79945ddd3445499e24-592116418',
+        // access_token: 'APP_USR-6112339268078456-062416-a80342ef6a04ff79945ddd3445499e24-592116418',
+        access_token: 'APP_USR-6718728269189792-112017-dc8b338195215145a4ec035fdde5cedf-491494389',
         integrator_id: 'dev_24c65fb163bf11ea96500242ac130004'
     });
     let urlImage = `https://aaronjacome-mp-ecommerce-nodej.herokuapp.com${req.body.img.split('.')[1]}.jpg`;
-    console.log(urlImage);
+    
     var preference = {
         items: [
             {
@@ -71,7 +72,8 @@ app.post('/checkout', async function (req, res) {
         payer: {
             name: "Lalo",
             surname: "Landa",
-            email: "test_user_41791043@testuser.com",
+            // email: "test_user_41791043@testuser.com",
+            email: "test_user_58295862@testuser.com",
             phone: {
                 area_code: "52",
                 number: 5549737300
@@ -101,28 +103,28 @@ app.post('/checkout', async function (req, res) {
         auto_return: "approved"
     };
 
-    try {
-        const response = await mercadopago.preferences.create(preference);
-        console.log(response.body.init_point);
-        res.redirect(response.body.init_point);
-    } catch (e) {
-        console.log(e);
-    }
-
-
     // try {
-    //     const url = `https://api.mercadopago.com/checkout/preferences?access_token=TEST-675360048701030-062400-2ab485580ea0f74b0281dae7f1704d27-589482002`;
-    //     const request = await axios.post(url, preference, {
-    //         headers: {
-    //             "Content-Type": "application/json",
-    //             "x-integrator-id": "dev_24c65fb163bf11ea96500242ac130004"
-    //         }
-    //     });
-    //     console.log(request.data.init_point);
-    //     res.redirect(request.data.init_point);
+    //     const response = await mercadopago.preferences.create(preference);
+    //     console.log('init point',response.body.init_point);
+    //     res.redirect(response.body.init_point);
     // } catch (e) {
     //     console.log(e);
     // }
+
+
+    try {
+        const url = `https://api.mercadopago.com/checkout/preferences?access_token=APP_USR-6718728269189792-112017-dc8b338195215145a4ec035fdde5cedf-491494389`;
+        const request = await axios.post(url, preference, {
+            headers: {
+                "Content-Type": "application/json",
+                "x-integrator-id": "dev_24c65fb163bf11ea96500242ac130004"
+            }
+        });
+        console.log(request.data.init_point);
+        res.redirect(request.data.init_point);
+    } catch (e) {
+        console.log(e);
+    }
 
 
 });
