@@ -41,29 +41,31 @@ app.post('/webhook', function (req, res) {
             body += chunk.toString();
         });
         req.on("end", () => {
-            console.log('DATA WEBHOOK', body);
-            const json = JSON.parse(body);
-            console.log('TYPE WEBHOOK', json["type"]);
-            switch (json["type"]) {
-                case "payment":
-                    try {
-                        const url = `https://api.mercadopago.com/v1/payments/${json.data.id}?access_token=APP_USR-8058997674329963-062418-89271e2424bb1955bc05b1d7dd0977a8-592190948`;
-                        console.log("URL PAYMENT ",url);
-                        axios.get(url, {
-                            headers: {
-                                "Content-Type": "application/json",
-                                "x-integrator-id": "dev_24c65fb163bf11ea96500242ac130004"
-                            }
-                        }).then(response => {
-                            console.log(response.data);
-                            res.end("ok");
-                        });
-                    } catch (e) {
-                        console.log(e);
-                        res.end("ok");
-                    }
-                    break;
-            }
+            console.log('DATA WEBHOOK BODY', body);
+            console.log('DATA WEBHOOK QUERY', req.query);
+            console.log('DATA WEBHOOK DATA', req.data);
+            // const json = JSON.parse(body);
+            // console.log('TYPE WEBHOOK', json["type"]);
+            // switch (json["type"]) {
+            //     case "payment":
+            //         try {
+            //             const url = `https://api.mercadopago.com/v1/payments/${json.data.id}?access_token=APP_USR-8058997674329963-062418-89271e2424bb1955bc05b1d7dd0977a8-592190948`;
+            //             console.log("URL PAYMENT ",url);
+            //             axios.get(url, {
+            //                 headers: {
+            //                     "Content-Type": "application/json",
+            //                     "x-integrator-id": "dev_24c65fb163bf11ea96500242ac130004"
+            //                 }
+            //             }).then(response => {
+            //                 console.log(response.data);
+            //                 res.end("ok");
+            //             });
+            //         } catch (e) {
+            //             console.log(e);
+            //             res.end("ok");
+            //         }
+            //         break;
+            // }
         });
     }
 });
