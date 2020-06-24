@@ -1,9 +1,10 @@
 var express = require('express');
 var exphbs = require('express-handlebars');
 var mercadopago = require('mercadopago');
-const bodyParser = require('body-parser');
+var bodyParser = require('body-parser');
 
 var app = express();
+var logger = require('morgan');
 
 mercadopago.configure({
     access_token: 'APP_USR-6718728269189792-112017-dc8b338195215145a4ec035fdde5cedf-491494389',
@@ -13,7 +14,7 @@ mercadopago.configure({
 const port = process.env.PORT || 3000;
 
 app.use(bodyParser.urlencoded({ extended: true }));
-
+app.use(logger('dev'));
 
 app.engine('handlebars', exphbs());
 app.set('view engine', 'handlebars');
@@ -38,59 +39,72 @@ app.get('/pending', function (req, res) {
     res.render('pending');
 });
 
-app.get('/notification', function (req, res) {
-    res.json(res.body);
+app.get('/webhook', function (req, res) {
+    if (req.method === "POST") {
+        let body = "";
+        req.on("data", chunk => {
+            body += chunk.toString();
+        });
+        req.on("end", () => {
+            console.log(body, "webhook response");
+            res.end("ok");
+        });
+    }
+    return res.status(200);
 });
 
-app.post('/checkout', function (req, res) {
+app.post('/checkout', async function (req, res) {
     let urlImage = `https://aaronjacome-mp-ecommerce-nodej.herokuapp.com${req.body.img.split('.')[1]}.jpg`;
     console.log(urlImage);
     var preference = {
-        external_reference: "aaronjacome93@gmail.com",
-        notification_url: "https://aaronjacome-mp-ecommerce-nodej.herokuapp.com/notification",
-        payer: {
-            name: 'Lalo Landa',
-            email: 'test_user_58295862@testuser.com',
-            phone: {
-                area_code: '52',
-                number: Number('5549737300')
-            },
-            address: {
-                zip_code: 'Insurgentes Sur',
-                street_name: '1602',
-                street_number: Number('03940')
-            }
-        },
         items: [
             {
                 id: "1234",
                 picture_url: urlImage,
                 title: req.body.title,
-                quantity: 1,
-                currency_id: 'MX',
-                unit_price: Number(req.body.price),
+                quantity: parseInt(req.body.unit),
+                currency_id: 'MXN',
+                description: 'Dispositivo móvil de Tienda e-commerce',
+                unit_price: parseFloat(req.body.price),
             },
         ],
-        back_urls: {
-            success: `https://aaronjacome-mp-ecommerce-nodej.herokuapp.com/success?collection_id=[PAYMENT_ID]&collection_status=approved&external_reference=[EXTERNAL_REFERENCE]&payment_type=credit_card&preference_id=[PREFERENCE_ID]&site_i=[SITE_ID]&processing_mode=aggregator&merchant_account_id=null`,
-            pending: 'https://aaronjacome-mp-ecommerce-nodej.herokuapp.com/pending',
-            failure: 'https://aaronjacome-mp-ecommerce-nodej.herokuapp.com/failure',
+        external_reference: "aaronjacome93@gmail.com",
+        payer: {
+            name: "Lalo",
+            surname: "Landa",
+            email: "test_user_58295862@testuser.com",
+            phone: {
+                area_code: "52",
+                number: 5549737300
+            },
+            address: {
+                zip_code: "03940",
+                street_name: "Insugentes Sur",
+                street_number: 1602
+            }
         },
         payment_methods: {
             excluded_payment_methods: [
-                { "id": "amex" }
+                {
+                    id: "amex"
+                }
             ],
-            excluded_payment_types: [
-                { "id": "atm" }
-            ],
+            excluded_payment_types: [{ id: "atm" }],
+            installments: 6,
+            default_installments: 6
         },
-        auto_return: 'approved'
+        back_urls: {
+            success: "https://localhost:3000/success",
+            pending: "https://localhost:3000.com/pending",
+            failure: "https://localhost:3000.com/error"
+        },
+        notification_url: "https://mercadopago-checkout.herokuapp.com/webhook",
+        auto_return: "approved"
     };
 
-    mercadopago.preferences.create(preference).then(response => {
-        console.log(response.body.init_point);
-        res.redirect(response.body.init_point);
-    });
+    const response = await mercadopago.preferences.create(preference);
+    console.log(response.body.init_point);
+    res.redirect(response.body.init_point);
 });
 
 app.use(express.static('assets'));
