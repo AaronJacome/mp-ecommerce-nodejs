@@ -35,6 +35,7 @@ app.get('/pending', function (req, res) {
 });
 
 app.post('/webhook', function (req, res) {
+    console.log('webhook response', res.data)
     if (req.method === "POST") {
         let body = "";
         req.on("data", chunk => {
@@ -44,6 +45,8 @@ app.post('/webhook', function (req, res) {
             console.log(body, "webhook response");
             res.end("ok");
         });
+
+
     }
     res.status(200);
 });
@@ -55,7 +58,7 @@ app.post('/checkout', async function (req, res) {
         integrator_id: 'dev_24c65fb163bf11ea96500242ac130004'
     });
     let urlImage = `https://aaronjacome-mp-ecommerce-nodej.herokuapp.com${req.body.img.split('.')[1]}.jpg`;
-    
+
     var preference = {
         items: [
             {
