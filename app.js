@@ -66,6 +66,7 @@ app.post('/webhook', function (req, res) {
             //         }
             //         break;
             // }
+            res.status(200).send();
         });
     }
 });
