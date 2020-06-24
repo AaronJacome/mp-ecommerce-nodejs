@@ -35,34 +35,34 @@ app.get('/pending', function (req, res) {
 });
 
 app.post('/webhook', function (req, res) {
-    // if (req.method === "POST") {
-    //     let body = "";
-    //     req.on("data", chunk => {
-    //         body += chunk.toString();
-    //     });
-    //     req.on("end", () => {
-    console.log('DATA webhook', req.body.data);
-    console.log('TYPE webhook',req.body["type"]);
-    switch (req.body["type"]) {
-        case "payment":
-            try {
-                const url = `https://api.mercadopago.com/v1/payments/${request.data.id}?access_token=APP_USR-6718728269189792-112017-dc8b338195215145a4ec035fdde5cedf-491494389`;
-                axios.get(url, {
-                    headers: {
-                        "Content-Type": "application/json",
-                        "x-integrator-id": "dev_24c65fb163bf11ea96500242ac130004"
+    if (req.method === "POST") {
+        let body = "";
+        req.on("data", chunk => {
+            body += chunk.toString();
+        });
+        req.on("end", () => {
+            console.log('DATA webhook', body);
+            console.log('TYPE webhook', body["type"]);
+            switch (body["type"]) {
+                case "payment":
+                    try {
+                        const url = `https://api.mercadopago.com/v1/payments/${body.data.id}?access_token=APP_USR-6718728269189792-112017-dc8b338195215145a4ec035fdde5cedf-491494389`;
+                        axios.get(url, {
+                            headers: {
+                                "Content-Type": "application/json",
+                                "x-integrator-id": "dev_24c65fb163bf11ea96500242ac130004"
+                            }
+                        }).then(response => {
+                            console.log(response.data);
+                            res.end("ok");
+                        });
+                    } catch (e) {
+                        console.log(e);
+                        res.end("ok");
                     }
-                }).then(response => {
-                    console.log(response.data);
-                    res.end("ok");
-                });
-            } catch (e) {
-                console.log(e);
-                res.end("ok");
+                    break;
             }
-        //             break;
-        //     }
-        // });
+        });
     }
 });
 
