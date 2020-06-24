@@ -47,7 +47,7 @@ app.post('/webhook', function (req, res) {
             switch (json["type"]) {
                 case "payment":
                     try {
-                        const url = `https://api.mercadopago.com/v1/payments/${json.data.id}?access_token=APP_USR-6112339268078456-062416-a80342ef6a04ff79945ddd3445499e24-592116418`;
+                        const url = `https://api.mercadopago.com/v1/payments/${json.data.id}?access_token=APP_USR-8058997674329963-062418-89271e2424bb1955bc05b1d7dd0977a8-592190948`;
                         console.log("URL PAYMENT ",url);
                         axios.get(url, {
                             headers: {
